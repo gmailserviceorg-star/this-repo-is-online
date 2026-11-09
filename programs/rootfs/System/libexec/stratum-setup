@@ -1,0 +1,37 @@
+#!/bin/sh
+# Stratum first-run setup (text mode). Screen order comes from /System/etc/setup.strata.
+C=/var/lib/stratum; mkdir -p $C; L="/System/Offline pages/legal"
+ask(){ printf '%s ' "$1"; read -r A; }
+page(){ n=$(wc -l <"$1"); i=1
+ while [ $i -le $n ]; do sed -n "${i},$((i+16))p" "$1"; i=$((i+17)); [ $i -le $n ] && { printf -- '-- Enter to scroll (%s%%) --' $((i*100/n)); read -r _; }; done
+ ask "End reached. Type ACCEPT to accept:"; [ "$A" = ACCEPT ]; }
+for id in $(stw strata dump /System/etc/setup.strata | awk -F'\t' '$2=="screen"{print $3}'); do
+ clear 2>/dev/null; echo "=== Stratum OS setup: $id ==="
+ case $id in
+ welcome) cat "/System/Offline pages/compat.txt"; ask "Press Enter to start"; ;;
+ language) echo "1) English  2) Francais  3) Espanol  4) Deutsch  5) Arabic"; ask "Choice [1]:"
+  case $A in 2) l=fr_FR;; 3) l=es_ES;; 4) l=de_DE;; 5) l=ar;; *) l=en_US;; esac; echo "LANG=$l.UTF-8" > $C/locale; echo "(only English text is translated so far)";;
+ keyboard) ask "Layout code (us, fr, de, es, ma, gb...) [us]:"; K=${A:-us}; loadkeys "$K" 2>/dev/null
+  echo "XKB_DEFAULT_LAYOUT=$K" > $C/labwc-environment; ask "Test box - type here and press Enter:"; echo "you typed: $A";;
+ network) stratum-net status; echo; ask "Wi-Fi? (y = show networks, Enter = skip):"; [ "$A" = y ] && { stratum-net wifi list; ask "SSID to join (blank=skip):"; [ -n "$A" ] && stratum-net wifi connect "$A"; };;
+ tos) until page "$L/Termsofservice.md"; do echo "You must scroll to the end and type ACCEPT."; done;;
+ privacy) until page "$L/PrivacyPolicy.md"; do echo "You must scroll to the end and type ACCEPT."; done;;
+ data) : > $C/telemetry; echo "Defaults are ON (none are sensitive). Each toggle and what it sends:"
+  while IFS="$(printf '\t')" read -r k lbl what ex; do echo; echo "[$k] $lbl - $what"; echo "    sample: $ex"; done < /System/etc/telemetry.tsv
+  echo; echo "1) Keep defaults   2) DISABLE DATA COLLECTING (all off)   3) Choose each"; ask "Choice [1]:"; M=$A
+  while IFS="$(printf '\t')" read -r k lbl rest; do v=on
+   [ "$M" = 2 ] && v=off
+   [ "$M" = 3 ] && { ask "$lbl on? [Y/n]:"; [ "$A" = n ] && v=off; }
+   echo "$k=$v" >> $C/telemetry; done < /System/etc/telemetry.tsv;;
+ account) ask "Username:"; U=$A; stty -echo; ask "Password:"; PW=$A; stty echo; echo
+  adduser -D -h /Users/$U -s /bin/sh "$U" && echo "$U:$PW" | chpasswd
+  for g in seat video audio input wheel; do addgroup "$U" $g 2>/dev/null; done
+  H=/Users/$U; mkdir -p $H/.config/stratum $H/.config/labwc $H/Desktop; echo "1) default wallpaper  2) my own image (png/jpg/webp)"; ask "Choice [1]:"
+  W=/usr/share/stratum/wallpaper.png; [ "$A" = 2 ] && { ask "Path to image:"; [ -f "$A" ] && { cp "$A" $H/.config/stratum/wallpaper; W=$H/.config/stratum/wallpaper; }; }
+  ask "Fit mode (fill/fit/center/tile/stretch) [fill]:"; echo "$W ${A:-fill}" > $H/.config/stratum/wallpaper.conf
+  ask "Theme (dark/light) [dark]:"; T=${A:-dark}; ask "Accent colour hex [#3b82f6]:"; AC=${A:-#3b82f6}
+  printf 'window.active.title.bg.color: %s\nmenu.items.active.bg.color: %s\n' "$AC" "$AC" > $H/.config/labwc/themerc-override; echo "$T" > $H/.config/stratum/theme
+  chown -R "$U" $H;;
+ finish) echo "Setup complete. Going to the login screen."; : > $C/setup.done; sleep 2;;
+ esac
+done

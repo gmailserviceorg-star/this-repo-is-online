@@ -1,0 +1,3 @@
+brix 1;
+task pack { lash "compileinstruction/assets.int" -> "build/app.pkg"; }
+default pack;

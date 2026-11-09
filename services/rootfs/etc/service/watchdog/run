@@ -1,0 +1,4 @@
+#!/bin/sh
+exec 2>&1
+[ -e /dev/watchdog ] || { modprobe softdog; sleep 1; }
+exec watchdog -F -t 5 -T 60 /dev/watchdog

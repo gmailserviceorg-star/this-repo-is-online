@@ -1,0 +1,4 @@
+<stwbuild schema="1">
+ <id>org.example.assets</id><name>Assets</name><version>0.1</version><layer>linux</layer><entry>data/a.bin</entry>
+ <compiler>assets.compiler</compiler><app>build/app.pkg</app><output>dist/assets.stw</output>
+</stwbuild>

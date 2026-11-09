@@ -1,0 +1,41 @@
+set timeout=3
+insmod part_gpt
+insmod ext2
+insmod all_video
+insmod gfxterm
+search --no-floppy --label STRATUMBOOT --set=root
+load_env
+if [ -z "$slot" ]; then set slot=a; fi
+if [ -z "$boot_count" ]; then set boot_count=0; fi
+# boot_count is reset to 0 by /usr/bin/stratum-boot-ok after a healthy session; 2 failed boots -> flip slot
+if [ "$boot_count" = 0 ]; then set boot_count=1
+elif [ "$boot_count" = 1 ]; then set boot_count=2
+else
+  if [ "$slot" = a ]; then set slot=b; else set slot=a; fi
+  set boot_count=1
+fi
+if [ ! -f /boot/slot-$slot/vmlinuz ]; then
+  if [ "$slot" = a ]; then set slot=b; else set slot=a; fi
+fi
+save_env slot boot_count
+if [ "$slot" = a ]; then set prev=b; set hash=$hash_a; set phash=$hash_b; else set prev=a; set hash=$hash_b; set phash=$hash_a; fi
+set base="console=tty0 panic=5 softlockup_panic=0 hung_task_panic=0 nmi_watchdog=1 stratum.persist=1"
+menuentry "Stratum OS" {
+  linux /boot/slot-$slot/vmlinuz quiet $base stratum.sfs=/boot/slot-$slot/rootfs.sfs stratum.sfs_sha256=$hash
+  initrd /boot/slot-$slot/initramfs.img
+}
+menuentry "Stratum OS (Safe Mode)" {
+  linux /boot/slot-$slot/vmlinuz $base nomodeset stratum.safe=1 stratum.sfs=/boot/slot-$slot/rootfs.sfs stratum.sfs_sha256=$hash
+  initrd /boot/slot-$slot/initramfs.img
+}
+menuentry "Previous Kernel" {
+  linux /boot/slot-$prev/vmlinuz $base stratum.sfs=/boot/slot-$prev/rootfs.sfs stratum.sfs_sha256=$phash
+  initrd /boot/slot-$prev/initramfs.img
+}
+menuentry "Recovery Shell" {
+  linux /boot/slot-$slot/vmlinuz $base stratum.shell=1 stratum.sfs=/boot/slot-$slot/rootfs.sfs
+  initrd /boot/slot-$slot/initramfs.img
+}
+if [ -f /boot/memtest.bin ]; then
+menuentry "Memory Test" { linux16 /boot/memtest.bin }
+fi

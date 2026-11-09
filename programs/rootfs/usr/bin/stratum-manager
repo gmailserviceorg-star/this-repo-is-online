@@ -1,0 +1,24 @@
+#!/bin/sh
+# Settings + Disk / Network / USB / Wine / Darling managers (text UI). `stratum-manager help`
+case "$1" in
+ disk) case "$2" in
+   list|"") lsblk -o NAME,SIZE,TYPE,FSTYPE,LABEL,MOUNTPOINT;;
+   format) mkfs."${4:-ext4}" "$3";; mount) mkdir -p "/mnt/${3##*/}"; mount "$3" "/mnt/${3##*/}";; umount) umount "$3";;
+   resize) resize2fs "$3" ${4:+"$4"};; smart) smartctl -H -A "$3";; eject) sync; eject "$3";;
+   iso) mkdir -p /mnt/iso-img; mount -o loop,ro "$3" /mnt/iso-img && echo "mounted at /mnt/iso-img";;
+   luks-format) cryptsetup luksFormat "$3";; luks-open) cryptsetup open "$3" "${4:-crypt}";; luks-close) cryptsetup close "$3";;
+   *) echo "disk list|format DEV [fs]|mount DEV|umount DEV|resize DEV [size]|smart DEV|eject DEV|iso FILE|luks-format|luks-open|luks-close DEV";; esac;;
+ net) shift; exec stratum-net "$@";;
+ usb) shift; exec stratum-usb "$@";;
+ extras) case "$2" in
+   install) f=/mnt/iso/Extras/$3.pkg; [ -f "$f" ] || f=/Extras/$3.pkg; [ -f "$f" ] || { echo "no such extra: $3 (see /mnt/iso/Extras)"; exit 1; }
+    rusted ctl ask "install extra $3" | grep -q allow || { echo denied; exit 1; }; unpkg -C / "$f" && echo "installed $3";;
+   *) ls /mnt/iso/Extras /Extras 2>/dev/null;; esac;;
+ wine) shift; command -v wine >/dev/null || { echo "Wine not installed: stratum-manager extras install wine"; exit 1; }
+  case "$1" in prefix) WINEPREFIX=${2:-$HOME/.wine} wineboot -i;; run) shift; exec rusted run wine -- wine "$@";; *) wine --version; echo "usage: wine prefix [dir] | wine run app.exe";; esac;;
+ darling) shift; command -v darling >/dev/null || { echo "Darling is not installed. CI does not build it; place darling.pkg in /Extras and run: stratum-manager extras install darling"; exit 1; }
+  exec rusted run darling -- darling "$@";;
+ wallpaper) ask(){ printf '%s ' "$1"; read -r A; }; ask "Image path:"; [ -f "$A" ] && { cp "$A" $HOME/.config/stratum/wallpaper; ask "Mode fill/fit/center/tile/stretch:"; echo "$HOME/.config/stratum/wallpaper ${A:-fill}" > $HOME/.config/stratum/wallpaper.conf; echo "applies at next login"; };;
+ apps) column -t -s "$(printf '\t')" /usr/share/stratum/apps.tsv 2>/dev/null || cat /usr/share/stratum/apps.tsv;;
+ *) echo "stratum-manager: disk | net | usb | extras [install NAME] | wine | darling | wallpaper | apps";;
+esac

@@ -1,0 +1,8 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ <xs:element name="software"><xs:complexType><xs:sequence>
+  <xs:element name="id" type="xs:string"/><xs:element name="name" type="xs:string"/><xs:element name="version" type="xs:string"/>
+  <xs:element name="author" type="xs:string" minOccurs="0"/><xs:element name="entry" type="xs:string"/>
+  <xs:element name="layer"><xs:simpleType><xs:restriction base="xs:string"><xs:enumeration value="linux"/><xs:enumeration value="wine"/><xs:enumeration value="darling"/></xs:restriction></xs:simpleType></xs:element>
+  <xs:element name="permissions"><xs:complexType><xs:sequence><xs:element name="permission" type="xs:string" minOccurs="0" maxOccurs="unbounded"/></xs:sequence></xs:complexType></xs:element>
+ </xs:sequence><xs:attribute name="schema" type="xs:int" use="required"/></xs:complexType></xs:element>
+</xs:schema>

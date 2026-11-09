@@ -1,0 +1,8 @@
+#!/bin/sh
+exec 2>&1
+[ -f /var/lib/stratum/setup.done ] || /System/libexec/stratum-setup </dev/tty1 >/dev/tty1 2>&1
+# a second start of this service = the session crashed and is being restarted
+[ -e /run/greetd.started ] && : > /run/stratum-recovered
+: > /run/greetd.started
+if [ -e /run/stratum-safe ]; then exec /sbin/getty 38400 tty1; fi
+exec greetd

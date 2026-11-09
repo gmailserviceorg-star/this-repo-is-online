@@ -1,0 +1,9 @@
+<stwbuild schema="1">
+ <id>org.example.hello</id><name>Hello</name><version>1.0.0</version><author>You</author>
+ <layer>linux</layer><entry>bin/hello</entry>
+ <compiler>hello.compiler</compiler><app>build/app.pkg</app>
+ <terms>Termsofservice.md</terms><privacy>PrivacyPolicy.md</privacy>
+ <accept tos="prompt" privacy="prompt"/>
+ <permission>network</permission>
+ <output>dist/hello.stw</output>
+</stwbuild>

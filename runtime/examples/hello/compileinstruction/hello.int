@@ -1,0 +1,8 @@
+/* Lash: what goes into app.pkg, and where */
+PACKAGE("hello", "1.0.0");
+ENTRY("bin/hello");
+EXCLUDE("share/*.txt");
+SECTIONS {
+  .bin  0o755 : { "src/hello.sh" -> "bin/hello"; }
+  .data 0o644 : { "assets/*" -> "share/"; }
+}

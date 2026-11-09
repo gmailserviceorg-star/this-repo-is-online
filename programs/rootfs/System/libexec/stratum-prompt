@@ -1,0 +1,2 @@
+#!/bin/sh
+printf '\n[Rusted] Allow: %s ? [y/N] ' "$*" > /dev/tty1; read -r a < /dev/tty1; [ "$a" = y ] || [ "$a" = Y ]

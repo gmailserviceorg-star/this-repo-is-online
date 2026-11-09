@@ -1,0 +1,5 @@
+crash	Crash reports	Stack trace + app name + OS version	{"app":"foot","sig":"SIGSEGV","os":"stratum-0.1","trace":"0x7f..,0x55.."}
+usage	Usage statistics	Counts of app launches (no content)	{"launches":{"foot":12,"pcmanfm":3}}
+diag	App diagnostics	App errors and exit codes	{"app":"mpv","exit":1,"err":"decoder unavailable"}
+hw	Hardware info	CPU model, RAM size, GPU vendor (no serials)	{"cpu":"x86_64","ram_mb":8192,"gpu":"intel"}
+update	Update telemetry	Installed version + update result	{"from":"0.1","to":"0.2","ok":true}

@@ -1,0 +1,22 @@
+#!/bin/sh
+# stratum-net status|wifi list|wifi connect SSID|fw-check|firewall on|off
+wl(){ ls /sys/class/net | grep -E '^(wl|wlan)' | head -n1; }
+case "$1" in
+ status) ip -br addr; echo; ip route; cat /etc/resolv.conf 2>/dev/null;;
+ wifi)
+  W=$(wl)
+  if [ -z "$W" ]; then
+   echo "No Wi-Fi interface exists."
+   echo "Wi-Fi hardware seen on PCI/USB:"; lspci 2>/dev/null | grep -i -E 'network|wireless'; lsusb 2>/dev/null | grep -i -E 'wireless|wlan|802.11'
+   echo "Firmware messages:"; dmesg | grep -i -E 'firmware|iwlwifi|ath|rtw|brcm' | tail -n 8
+   echo "If firmware is missing: stratum-manager extras install firmware"; exit 1
+  fi
+  case "$2" in
+   list) iwctl station "$W" scan; sleep 2; iwctl station "$W" get-networks;;
+   connect) shift 2; iwctl station "$W" connect "$@" && iwctl station "$W" show || echo "connection FAILED (see message above)";;
+   *) iwctl station "$W" show;;
+  esac;;
+ fw-check) dmesg | grep -i 'firmware' | grep -i -E 'fail|not found|missing|error';;
+ firewall) case "$2" in on) nft -f /etc/nftables.nft;; off) nft flush ruleset;; *) nft list ruleset;; esac;;
+ *) echo "usage: stratum-net status|wifi [list|connect SSID]|fw-check|firewall [on|off]";;
+esac

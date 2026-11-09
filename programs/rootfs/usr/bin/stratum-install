@@ -1,0 +1,16 @@
+#!/bin/sh
+# stratum-install /dev/sdX   -- installs from the running live ISO (ERASES the disk)
+set -e; D=$1; [ -b "$D" ] || { echo "usage: $0 /dev/sdX"; exit 1; }
+SRC=/mnt/iso; [ -f $SRC/boot/rootfs.sfs ] || { echo "no payload at $SRC (boot the live ISO first)"; exit 1; }
+printf 'ERASE %s ? type YES: ' "$D"; read -r a; [ "$a" = YES ] || exit 1
+P=$D; case $D in *nvme*|*mmcblk*) P=${D}p;; esac
+parted -s $D mklabel gpt mkpart bios 1MiB 2MiB set 1 bios_grub on mkpart esp fat32 2MiB 202MiB set 2 esp on mkpart boot ext4 202MiB 1800MiB mkpart data ext4 1800MiB 100%
+sleep 2; mkfs.vfat -F32 ${P}2; mkfs.ext4 -qL STRATUMBOOT ${P}3; mkfs.ext4 -qL STRATUMDATA ${P}4
+mkdir -p /mnt/t; mount ${P}3 /mnt/t; mkdir -p /mnt/t/boot/slot-a /mnt/t/boot/grub /mnt/t/esp; mount ${P}2 /mnt/t/esp
+cp $SRC/boot/vmlinuz $SRC/boot/initramfs.img $SRC/boot/rootfs.sfs /mnt/t/boot/slot-a/
+cp /usr/share/stratum/grub.cfg.installed /mnt/t/boot/grub/grub.cfg
+grub-editenv /mnt/t/boot/grub/grubenv create
+grub-editenv /mnt/t/boot/grub/grubenv set slot=a boot_count=0 hash_a=$(sha256sum /mnt/t/boot/slot-a/rootfs.sfs | cut -d' ' -f1)
+grub-install --target=i386-pc --boot-directory=/mnt/t/boot $D || echo "BIOS grub failed (UEFI-only disk?)"
+grub-install --target=x86_64-efi --efi-directory=/mnt/t/esp --boot-directory=/mnt/t/boot --removable || echo "UEFI grub failed"
+umount /mnt/t/esp /mnt/t; mount ${P}4 /mnt/t; mkdir -p /mnt/t/upper /mnt/t/work; umount /mnt/t; echo "installed. reboot."

@@ -1,0 +1,5 @@
+brix 1;
+var name = "hello";
+task prep { echo "building $name"; run "mkdir -p build"; }
+task build { need prep; lash "compileinstruction/hello.int" -> "build/app.pkg"; }
+default build;

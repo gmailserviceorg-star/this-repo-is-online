@@ -1,0 +1,30 @@
+#!/bin/sh
+# library-make: `libs` file (C-like) -> build/NAME/makefile + Linker.ld -> real linker (cc/ld) -> dist/NAME.lib
+# usage: library-make [libs-file]      env: CC=cc
+set -eu
+F=${1:-libs}; [ -f "$F" ] || { echo "library-make: no '$F' file" >&2; exit 1; }
+mkdir -p build dist; : > build/.libs
+sed 's#//.*$##' "$F" | tr '\n' ' ' | sed 's#/\*[^*]*\*\+\([^/*][^*]*\*\+\)*/##g' | sed 's/;/;\n/g;s/{/{\n/g;s/}/}\n/g' | awk '
+function trim(s){gsub(/^[ \t]+|[ \t]+$/,"",s);return s}
+function q(s,k,  x){x=s;sub("^" k "[ \t]+\"","",x);sub("\"$","",x);return x}
+function emit(  d,n,i,o,all){
+ if(name=="")return
+ d="build/" name; system("mkdir -p " d)
+ print "VERS_" toupper(name) "_" ver " {\n  global:" > (d "/Linker.ld")
+ n=split(exps,e," "); for(i=1;i<=n;i++) print "    " e[i] ";" > (d "/Linker.ld")
+ print "  local: *;\n};" > (d "/Linker.ld"); close(d "/Linker.ld")
+ n=split(srcs,sa," "); all=""
+ for(i=1;i<=n;i++){o=sa[i];sub(/.*\//,"",o);sub(/\.[^.]*$/,"",o);all=all " " o ".o"}
+ print "CC ?= cc\n.PHONY: all\nall: " name ".lib\n" name ".lib:" all " Linker.ld\n\t$(CC) -shared -o $@" all " -Wl,--version-script=Linker.ld -Wl,-soname," name ".lib" lk > (d "/makefile")
+ for(i=1;i<=n;i++){o=sa[i];sub(/.*\//,"",o);sub(/\.[^.]*$/,"",o);print o ".o: ../../" sa[i] "\n\t$(CC) -fPIC " cf inc " -c $< -o $@" > (d "/makefile")}
+ close(d "/makefile"); print name >> "build/.libs"; name=""}
+{ s=trim($0); if(s=="")next; sub(/;$/,"",s); n=split(s,w,/[ \t]+/)
+ if(w[1]=="lib"){name=w[2];ver=1;for(i=3;i<=n;i++)if(w[i]=="version")ver=w[i+1];srcs="";exps="";cf="-O2";lk="";inc="";next}
+ if(w[1]=="source"){srcs=srcs " " q(s,"source");next}
+ if(w[1]=="export"){exps=exps " " w[2];next}
+ if(w[1]=="cflags"){cf=q(s,"cflags");next}
+ if(w[1]=="include"){inc=inc " -I../../" q(s,"include");next}
+ if(w[1]=="link"){lk=lk " -l" w[2];next}
+ if(w[1]=="}"){emit();next}
+ if(w[1]!="{") print "library-make: ignoring: " s > "/dev/stderr" }'
+while read -r n; do make -s -C "build/$n" && cp "build/$n/$n.lib" "dist/$n.lib" && echo "built dist/$n.lib"; done < build/.libs

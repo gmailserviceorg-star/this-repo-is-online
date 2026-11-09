@@ -1,0 +1,3 @@
+#!/bin/sh
+exec 2>&1
+exec earlyoom -m 5 -s 100 -r 0

@@ -1,0 +1,6 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ <xs:simpleType name="accept"><xs:restriction base="xs:string"><xs:enumeration value="prompt"/><xs:enumeration value="preapproved"/></xs:restriction></xs:simpleType>
+ <xs:complexType name="doc"><xs:attribute name="sha256" type="xs:string" use="required"/><xs:attribute name="accept" type="accept" use="required"/></xs:complexType>
+ <xs:element name="automated"><xs:complexType><xs:sequence><xs:element name="tos" type="doc"/><xs:element name="privacy" type="doc"/></xs:sequence>
+ <xs:attribute name="schema" type="xs:int" use="required"/></xs:complexType></xs:element>
+</xs:schema>

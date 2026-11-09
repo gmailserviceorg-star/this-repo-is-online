@@ -1,0 +1,8 @@
+[package]
+name = "stw"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+stw-pkg = { path = "../stw-pkg" }
+stw-lang = { path = "../stw-lang" }
+roxmltree = "0.20"

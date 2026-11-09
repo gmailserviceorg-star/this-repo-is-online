@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Lash</title><style>body{font:16px/1.5 sans-serif;max-width:46em;margin:2em auto;padding:0 1em;background:#fff;color:#111}pre{background:#eef;padding:.6em;overflow:auto}code{background:#eef}</style></head><body>
+<h1>Lash</h1><p>Lash is the <code>.int</code> instruction language (linker.ld-like): what goes into the app <code>.pkg</code> and where.</p>
+<h2>Grammar (EBNF)</h2><pre>file    = { stmt } ;
+stmt    = "PACKAGE" "(" STRING "," STRING ")" ";"
+        | "ENTRY" "(" STRING ")" ";"
+        | "EXCLUDE" "(" STRING ")" ";"
+        | "SECTIONS" "{" { section } "}" ;
+section = ID [ NUMBER ] ":" "{" { STRING "-&gt;" STRING ";" } "}" ;</pre>
+<p>NUMBER may be octal: <code>0o755</code>. Source paths may use <code>*</code> (last path part) or name a directory. A target ending in <code>/</code> is a directory.</p>
+<h2>Example</h2><pre>PACKAGE("hello", "1.0.0");
+ENTRY("bin/hello");
+EXCLUDE("share/*.txt");
+SECTIONS {
+  .bin  0o755 : { "src/hello.sh" -&gt; "bin/hello"; }
+  .data 0o644 : { "assets/*" -&gt; "share/"; }
+}</pre></body></html>

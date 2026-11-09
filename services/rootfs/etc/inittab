@@ -1,0 +1,5 @@
+::sysinit:/System/libexec/stage1
+::respawn:/usr/bin/runsvdir -P /etc/service
+tty2::respawn:/sbin/getty 38400 tty2
+::ctrlaltdel:/sbin/reboot
+::shutdown:/bin/umount -a -r

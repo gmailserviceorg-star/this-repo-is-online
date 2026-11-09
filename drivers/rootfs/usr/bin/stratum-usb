@@ -1,0 +1,10 @@
+#!/bin/sh
+# stratum-usb list | allow DEV | block DEV | eject DEVNODE   (policy changes ask Rusted first)
+ask(){ rusted ctl ask "usb $1 $2" 2>/dev/null | grep -q allow; }
+case "$1" in
+ list) for d in /sys/bus/usb/devices/[0-9]*; do [ -f $d/product ] && printf '%s  %s  authorized=%s\n' "$(basename $d)" "$(cat $d/product)" "$(cat $d/authorized)"; done; lsusb;;
+ allow) ask allow "$2" && echo 1 > /sys/bus/usb/devices/$2/authorized && echo allowed || echo denied;;
+ block) ask block "$2" && echo 0 > /sys/bus/usb/devices/$2/authorized && echo blocked || echo denied;;
+ eject) sync; umount "$2"* 2>/dev/null; eject "$2" && echo "safe to remove";;
+ *) echo "usage: stratum-usb list|allow DEV|block DEV|eject /dev/sdX";;
+esac

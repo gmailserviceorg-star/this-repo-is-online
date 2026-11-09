@@ -1,0 +1,12 @@
+// first-run order; stratum-setup walks these screens top to bottom
+setup {
+  screen welcome "Welcome";
+  screen language "Language";
+  screen keyboard "Keyboard layout";
+  screen network "Network";
+  screen tos "Terms of Service";
+  screen privacy "Privacy Policy";
+  screen data "Data collection";
+  screen account "Account, wallpaper and theme";
+  screen finish "Finish";
+}

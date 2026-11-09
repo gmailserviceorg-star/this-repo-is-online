@@ -1,0 +1,2 @@
+PACKAGE("assets","0.1");
+SECTIONS { .d 0o644 : { "data" -> "data"; } }

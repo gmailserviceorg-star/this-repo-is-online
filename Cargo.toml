@@ -1,0 +1,9 @@
+[workspace]
+resolver = "2"
+members = ["runtime/stw-pkg","runtime/stw-lang","runtime/stw","services/rusted","programs/stratumview","programs/bootset"]
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

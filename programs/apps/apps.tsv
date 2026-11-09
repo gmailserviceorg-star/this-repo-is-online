@@ -1,0 +1,38 @@
+name	package	purpose	est_MB	backend
+Terminal	foot	tabs-less terminal (use multiplexer), sh/bash-compatible shell, unpkg/pkg/stw/stwc	1	apk:foot
+Browser	stratumview+luakit	tabs, bookmarks, history, private mode, downloads; engine chain in webview.toml	45	apk:luakit
+Disk Manager	stratum-manager	list/format/mount/resize/SMART/eject/ISO/LUKS (text UI)	1	script
+Network Manager	stratum-net	wired DHCP/static, honest Wi-Fi via iwd, firewall	1	script
+USB Manager	stratum-usb	device list, allow/block, safe eject (Rusted-asked)	0	script
+Wine Manager	stratum-manager wine	prefixes and sandboxed run	0	script
+Darling Manager	stratum-manager darling	sandboxed run (Darling not built by CI)	0	script
+File Manager	pcmanfm	tabs, thumbnails (no dual-pane yet)	6	apk:pcmanfm
+Text/Code Editor	mousepad	syntax highlight (no custom-language grammars yet)	3	apk:mousepad
+Image Viewer	imv	PNG/JPEG/WEBP/GIF/BMP/SVG/AVIF	1	apk:imv
+Media Player	mpv	audio+video decoders via ffmpeg	25	apk:mpv
+Audio Mixer	pavucontrol	PipeWire mixer	3	apk:pavucontrol
+Archive Manager	xarchiver	zip/tar/gz/bz2/xz/zst/7z/rar(read)	1	apk:xarchiver
+System Monitor	lxtask	CPU/RAM/process list + kill	1	apk:lxtask
+Settings	stratum-manager	central text settings entry	0	script
+Software Center	stw install	installs .stw (CLI)	0	runtime
+Package Builder IDE	stwc+mousepad	build .stw projects (no IDE UI yet)	0	runtime
+Calculator	galculator	calculator	1	apk:galculator
+Screenshot/Recorder	grim+slurp+wf-recorder	screenshots and screen recording	2	apk:grim
+Clipboard History	cliphist	clipboard manager	1	apk:cliphist
+Notes	mousepad	notes (plain files)	0	apk:mousepad
+Calendar/Timers	remind	STUB: not implemented	0	stub
+PDF/Document Viewer	zathura	PDF viewer	3	apk:zathura
+Print Manager	cups	CUPS server (no GUI)	8	apk:cups
+Bluetooth Manager	bluez	bluetoothctl CLI	2	apk:bluez
+Display Manager	wlr-randr	resolution, scale, multi-monitor (CLI)	1	apk:wlr-randr
+Power Manager	upower	battery info (no profiles UI)	1	apk:upower
+Backup/Restore	rsync	STUB: rsync only, no snapshots	1	apk:rsync
+Firewall/Privacy Center	stratum-net firewall	nftables rules; Rusted audit log	1	script
+Task Scheduler	crond	busybox crond	0	stub
+Font Manager	fontconfig	STUB: fc-list only	1	apk:fontconfig
+Accessibility	-	NOT IMPLEMENTED	0	stub
+Search	plocate+fd	indexed file search (CLI)	1	apk:plocate
+Offline Help Center	tutorials	Brix/Lash/Strata pages in /System/Offline pages/Tutors/www	0	files
+Remote/Screen Share	wayvnc	VNC screen share	1	apk:wayvnc
+Crash Reporter	-	NOT IMPLEMENTED (local-only by design)	0	stub
+Update Manager	-	NOT IMPLEMENTED (A/B slots exist; updater missing)	0	stub

@@ -1,0 +1,26 @@
+[boot]
+manifest = "/System/etc/rusted/boot.manifest"
+sig = "/System/etc/rusted/boot.manifest.sig"
+pubkeys = "/System/etc/rusted/trusted.pub"
+safe_flag = "/run/stratum-safe"
+[watch]
+interval_s = 30
+upper = "/mnt/ovl/upper"
+lock = ["/System", "/boot"]
+[audit]
+log = "/var/log/rusted.log"
+[ipc]
+socket = "/run/rusted.sock"
+prompt_cmd = "/System/libexec/stratum-prompt"
+[profile.linux]
+ro = ["/usr", "/lib", "/bin", "/etc", "/System"]
+rw = ["/tmp", "/Users"]
+net = true
+[profile.wine]
+ro = ["/usr", "/lib", "/bin", "/etc", "/opt", "/System"]
+rw = ["/tmp", "/Users"]
+net = true
+[profile.darling]
+ro = ["/usr", "/lib", "/bin", "/etc", "/Extras", "/System"]
+rw = ["/tmp", "/Users"]
+net = false

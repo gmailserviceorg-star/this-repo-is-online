@@ -1,0 +1,16 @@
+# StratumView engine chain, tried in order. `stratumview status` shows health.
+order = ["webkitgtk", "servo", "cef", "litehtml"]
+[engine.webkitgtk]
+bin = "/usr/bin/luakit"
+open = ["/usr/bin/luakit", "{url}"]
+health = ["/usr/bin/luakit", "--version"]
+[engine.servo]
+bin = "/usr/bin/servo"
+open = ["/usr/bin/servo", "{url}"]
+health = ["/usr/bin/servo", "--version"]
+[engine.cef]
+bin = "/Extras/cef/stratum-cef"
+open = ["/Extras/cef/stratum-cef", "{url}"]
+[engine.litehtml]
+bin = "/usr/bin/w3m"
+open = ["/usr/bin/foot", "-e", "/usr/bin/w3m", "{url}"]

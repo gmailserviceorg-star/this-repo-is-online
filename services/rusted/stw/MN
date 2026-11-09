@@ -1,0 +1,9 @@
+<stwbuild schema="1">
+ <id>org.stratum.rusted</id><name>Rusted</name><version>0.1.0</version><author>Stratum</author>
+ <layer>linux</layer><entry>bin/rusted</entry>
+ <compiler>rusted.compiler</compiler><app>build/app.pkg</app>
+ <terms>Termsofservice.md</terms><privacy>PrivacyPolicy.md</privacy>
+ <accept tos="preapproved" privacy="preapproved"/>
+ <permission>system</permission>
+ <output>dist/Rusted.stw</output>
+</stwbuild>

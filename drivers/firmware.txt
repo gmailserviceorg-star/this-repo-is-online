@@ -1,0 +1,5 @@
+# built into Extras/firmware.pkg by scripts/30-rootfs.sh (see mkextra). Add Alpine package names here.
+linux-firmware-i915
+linux-firmware-iwlwifi
+linux-firmware-rtl_nic
+linux-firmware-rtw88

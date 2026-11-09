@@ -1,0 +1,9 @@
+/* LIB definition: C-like. library-make turns this into makefile + Linker.ld and links it. */
+lib mathx version 1 {
+  source "src/add.c";
+  source "src/mul.c";
+  export mx_add;
+  export mx_mul;
+  cflags "-O2 -Wall";
+  link m;
+}

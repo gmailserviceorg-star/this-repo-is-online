@@ -1,0 +1,5 @@
+#!/bin/sh
+# healthy session: reset the A/B boot counter (installed systems only)
+G=/mnt/iso/boot/grub/grubenv
+[ -f $G ] || exit 0
+mount -o remount,rw /mnt/iso 2>/dev/null && grub-editenv $G set boot_count=0; mount -o remount,ro /mnt/iso 2>/dev/null; exit 0

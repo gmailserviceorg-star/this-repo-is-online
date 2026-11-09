@@ -1,0 +1,6 @@
+#!/bin/sh
+exec 2>&1
+S=/System/home/uservice/Rusted.stw
+if ! /usr/bin/stw verify $S; then echo "Rusted signature FAILED -> safe mode"; : > /run/stratum-safe; sleep 3600; exit 1; fi
+mkdir -p /run/rusted
+exec /usr/bin/stw run $S daemon

@@ -1,0 +1,9 @@
+#!/bin/sh
+read W M < "$HOME/.config/stratum/wallpaper.conf" 2>/dev/null
+[ -f "$W" ] && swaybg -i "$W" -m "${M:-fill}" >/dev/null 2>&1 &
+pipewire >/dev/null 2>&1 & wireplumber >/dev/null 2>&1 & pipewire-pulse >/dev/null 2>&1 &
+mako >/dev/null 2>&1 &
+waybar >/dev/null 2>&1 &
+wl-paste --watch cliphist store >/dev/null 2>&1 &
+command -v spice-vdagent >/dev/null && spice-vdagent >/dev/null 2>&1 &
+[ -e /run/stratum-recovered ] && { notify-send "Stratum recovered from a problem" "The session was restarted."; rm -f /run/stratum-recovered; }

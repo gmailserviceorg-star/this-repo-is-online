@@ -1,0 +1,14 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Strata</title><style>body{font:16px/1.5 sans-serif;max-width:46em;margin:2em auto;padding:0 1em;background:#fff;color:#111}pre{background:#eef;padding:.6em;overflow:auto}code{background:#eef}</style></head><body>
+<h1>Strata</h1><p>Strata is the tiny markup/config language for menus and the setup flow. Tools: <code>stw strata check|dump|labwc FILE</code>.</p>
+<h2>Grammar (EBNF)</h2><pre>file = { node } ;
+node = ID { arg } [ "-&gt;" ID [ "(" [ arg { "," arg } ] ")" ] ] ( ";" | "{" { prop | node } "}" ) ;
+prop = ID ":" arg ";" ;
+arg  = STRING | NUMBER | ID ;</pre>
+<h2>Example</h2><pre>menu root-menu "Stratum" {
+  menu new "New" {
+    item "Folder" -&gt; run("stratum-new", "folder");
+  }
+  sep;
+  item "Terminal" -&gt; run("foot");
+}</pre>
+<p>Note: write a space before <code>-&gt;</code> (identifiers may contain "-").</p></body></html>

@@ -1,0 +1,5 @@
+brix 1;
+var out = "build";
+task stage { run "mkdir -p $out/bin && cp $RUSTED_BIN $out/bin/rusted"; }
+task build { need stage; lash "compileinstruction/rusted.int" -> "build/app.pkg"; }
+default build;

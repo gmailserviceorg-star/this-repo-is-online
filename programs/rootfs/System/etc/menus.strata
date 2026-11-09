@@ -1,0 +1,19 @@
+// desktop right-click menu -> labwc menu.xml (stw strata labwc)
+menu root-menu "Stratum" {
+  menu new "New" {
+    item "Text File" -> run("stratum-new", "file");
+    item "Folder" -> run("stratum-new", "folder");
+    item "Markdown Document" -> run("stratum-new", "md");
+    item "Document" -> run("stratum-new", "doc");
+    item "STW Project" -> run("stratum-new", "stw");
+    item "PKG Archive" -> run("stratum-new", "pkg");
+  }
+  sep;
+  item "Terminal" -> run("foot");
+  item "Files" -> run("pcmanfm");
+  item "Browser" -> run("stratumview", "open", "about:blank");
+  item "Settings" -> run("foot", "-e", "stratum-manager");
+  item "Change Wallpaper" -> run("foot", "-e", "stratum-manager", "wallpaper");
+  sep;
+  item "Exit" -> run("pkill", "labwc");
+}

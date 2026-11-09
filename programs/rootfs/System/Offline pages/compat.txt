@@ -1,0 +1,6 @@
+COMPATIBILITY NOTES
+- Linux programs run natively (musl/Alpine packages; glibc binaries may need a compat layer).
+- Windows .exe: Wine is an optional download (stratum-manager extras install wine). Many apps, games with anti-cheat, and some drivers will NOT work.
+- macOS: Darling covers mainly command-line Darwin tools and a few GUI apps. It is NOT bundled; many Mac apps will not run.
+- Wi-Fi and GPUs may need firmware: stratum-manager extras install firmware.
+- This is an early, largely untested build.

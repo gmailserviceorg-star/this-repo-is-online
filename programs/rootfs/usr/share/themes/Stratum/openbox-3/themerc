@@ -1,0 +1,12 @@
+border.width: 1
+padding.width: 6
+window.active.border.color: #3b82f6
+window.inactive.border.color: #2a2f3a
+window.active.title.bg.color: #1b2333
+window.inactive.title.bg.color: #141a26
+window.active.label.text.color: #e6edf7
+window.inactive.label.text.color: #8794ab
+menu.items.bg.color: #141a26
+menu.items.text.color: #e6edf7
+menu.items.active.bg.color: #3b82f6
+menu.items.active.text.color: #ffffff

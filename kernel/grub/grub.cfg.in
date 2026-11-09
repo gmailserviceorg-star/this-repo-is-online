@@ -1,0 +1,36 @@
+set timeout=5
+set default=0
+serial --unit=0 --speed=115200
+terminal_input console serial
+terminal_output console serial
+insmod all_video
+insmod gfxterm
+insmod png
+if loadfont /boot/grub/theme/stratum.pf2; then
+  set gfxmode=auto
+  terminal_output gfxterm
+  set theme=/boot/grub/theme/theme.txt
+fi
+search --no-floppy --file --set=root /boot/rootfs.sfs
+set base="console=tty0 console=ttyS0,115200 panic=5 softlockup_panic=0 hung_task_panic=0 nmi_watchdog=1 stratum.sfs=/boot/rootfs.sfs stratum.sfs_sha256=@SFS_SHA256@"
+menuentry "Stratum OS" {
+  linux /boot/vmlinuz quiet $base
+  initrd /boot/initramfs.img
+}
+menuentry "Stratum OS (Safe Mode)" {
+  linux /boot/vmlinuz $base nomodeset stratum.safe=1
+  initrd /boot/initramfs.img
+}
+if [ -f /boot/vmlinuz.prev ]; then
+menuentry "Previous Kernel" {
+  linux /boot/vmlinuz.prev $base
+  initrd /boot/initramfs.img
+}
+fi
+menuentry "Recovery Shell" {
+  linux /boot/vmlinuz $base stratum.shell=1
+  initrd /boot/initramfs.img
+}
+if [ -f /boot/memtest.bin ]; then
+menuentry "Memory Test" { linux16 /boot/memtest.bin }
+fi

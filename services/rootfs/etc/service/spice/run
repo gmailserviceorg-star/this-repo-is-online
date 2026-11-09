@@ -1,0 +1,5 @@
+#!/bin/sh
+exec 2>&1
+command -v spice-vdagentd >/dev/null || { sleep 3600; exit 0; }
+modprobe virtio_console 2>/dev/null
+exec spice-vdagentd -x

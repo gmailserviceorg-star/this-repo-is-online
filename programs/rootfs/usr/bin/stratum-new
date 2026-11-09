@@ -1,0 +1,12 @@
+#!/bin/sh
+D=${2:-$HOME/Desktop}; mkdir -p "$D"
+case $1 in
+ folder) mkdir -p "$D/New Folder";; file) : > "$D/New File.txt";; md) printf '# Untitled\n' > "$D/Untitled.md";; doc) printf '' > "$D/Document.txt";;
+ stw) P="$D/NewProject"; mkdir -p "$P/compileinstruction" "$P/src"
+  printf '<stwbuild schema="1">\n <id>org.me.app</id><name>App</name><version>0.1</version><layer>linux</layer><entry>bin/app</entry>\n <compiler>app.compiler</compiler><app>build/app.pkg</app><output>dist/app.stw</output>\n</stwbuild>\n' > "$P/MN"
+  printf 'brix 1;\ntask build { run "mkdir -p build"; lash "compileinstruction/app.int" -> "build/app.pkg"; }\ndefault build;\n' > "$P/app.compiler"
+  printf 'PACKAGE("app","0.1");\nENTRY("bin/app");\nSECTIONS { .bin 0o755 : { "src/app.sh" -> "bin/app"; } }\n' > "$P/compileinstruction/app.int"
+  printf '#!/bin/sh\necho hi\n' > "$P/src/app.sh"; printf '# Terms\n' > "$P/Termsofservice.md"; printf '# Privacy\n' > "$P/PrivacyPolicy.md";;
+ pkg) pkg create "$D/New.pkg";;
+ *) echo "usage: stratum-new file|folder|md|doc|stw|pkg [dir]";;
+esac

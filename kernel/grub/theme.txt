@@ -1,0 +1,16 @@
+desktop-image: "bg.png"
+title-text: ""
+message-color: "#9fb3d1"
++ boot_menu {
+  left = 28%
+  top = 42%
+  width = 44%
+  height = 40%
+  item_font = "Stratum Sans 16"
+  selected_item_font = "Stratum Sans 16"
+  item_color = "#aab8cf"
+  selected_item_color = "#ffffff"
+  item_height = 34
+  item_padding = 8
+  item_spacing = 6
+}

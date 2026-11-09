@@ -1,0 +1,13 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Brix</title><style>body{font:16px/1.5 sans-serif;max-width:46em;margin:2em auto;padding:0 1em;background:#fff;color:#111}pre{background:#eef;padding:.6em;overflow:auto}code{background:#eef}</style></head><body>
+<h1>Brix</h1><p>Brix is the <code>.compiler</code> build language (makefile meets build.yml). <code>stwc build</code> runs it.</p>
+<h2>Grammar (EBNF)</h2><pre>file  = "brix" NUMBER ";" { decl } ;
+decl  = "var" ID "=" STRING ";" | "default" ID ";" | "task" ID "{" { step } "}" ;
+step  = "need" ID ";" | "run" STRING ";" | "echo" STRING ";" | "lash" STRING "-&gt;" STRING ";" ;</pre>
+<p>Keywords: brix var task need run echo lash default. <code>$name</code> expands vars, then environment variables. <code>run</code> uses <code>sh -c</code> in the project directory. Comments: <code>//</code> and <code>/* */</code>.</p>
+<h2>Example</h2><pre>brix 1;
+var name = "hello";
+task prep  { echo "building $name"; run "mkdir -p build"; }
+task build { need prep;
+  lash "compileinstruction/hello.int" -&gt; "build/app.pkg"; }
+default build;</pre>
+<p><code>lash</code> only accepts a <code>.int</code> file located at <code>PROJECT/compileinstruction/NAME.int</code>.</p></body></html>
